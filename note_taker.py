@@ -1,4 +1,5 @@
 from tkinter import *
+import Note
 
 root = Tk()
 root.title("Note Taker")
@@ -7,36 +8,40 @@ root.geometry("300x600")
 root.config(bg="grey")
 
 
+def save_note():
+    pass
+
+
 def open_new_note():
     print("Open new note widow")
+    title_value = StringVar()
+    text_value = StringVar()
+
     new_note_window = Toplevel(root)
-    # new_note_window.geometry("400x400")
 
     new_note_title = Label(new_note_window, text="New Note")
-    # new_note_title.config(width=15)
-    new_note_title.grid()
+    new_note_title.grid(sticky=E + W)
 
     title_label = Label(new_note_window, text="Title: ")
-    title_label.grid(sticky=W)
+    title_label.grid(sticky=W, columnspan=2)
 
-    title_text = Text(new_note_window)
-    title_text.config(height=10, width=20)
-    title_text.grid()
+    title_entry = Entry(new_note_window, bg="grey", fg="white", textvariable=title_value)
+    title_entry.grid()
 
     note_label = Label(new_note_window, text="Note text:")
-    note_label.grid(sticky=W)
+    note_label.grid(sticky=W, columnspan=2)
 
     note_text = Text(new_note_window)
-    note_text.config(height=10, weidth=20)
+    note_text.config(height=10, width=20, bg="grey", fg="white", textvariable=text_value)
     note_text.grid()
 
     button_frame = Frame(new_note_window)
     button_frame.grid()
 
-    cancel_button = Button(button_frame, text="cancel")
+    cancel_button = Button(button_frame, text="cancel", command=new_note_window.destroy)
     cancel_button.grid(row=0, column=1, sticky=E)
 
-    save_button = Button(button_frame, text="save")
+    save_button = Button(button_frame, text="save", command=save_note())
     save_button.grid(row=0, column=2, sticky=E)
 
 
