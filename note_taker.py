@@ -8,8 +8,13 @@ root.geometry("300x600")
 root.config(bg="grey")
 
 
-def save_note():
-    pass
+def save_note(title, body, category="Shopping"):
+    print("Save Note")
+    print(title)
+    print(body)
+    print(category)
+
+    # new_note = Note(title, body, category)
 
 
 def open_new_note():
@@ -32,7 +37,7 @@ def open_new_note():
     note_label.grid(sticky=W, columnspan=2)
 
     note_text = Text(new_note_window)
-    note_text.config(height=10, width=20, bg="grey", fg="white", textvariable=text_value)
+    note_text.config(height=10, width=20, bg="grey", fg="white")
     note_text.grid()
 
     button_frame = Frame(new_note_window)
@@ -41,7 +46,8 @@ def open_new_note():
     cancel_button = Button(button_frame, text="cancel", command=new_note_window.destroy)
     cancel_button.grid(row=0, column=1, sticky=E)
 
-    save_button = Button(button_frame, text="save", command=save_note())
+    save_button = Button(button_frame, text="save",
+                         command=lambda: save_note(title_value.get(), note_text.get(1.0, END)))
     save_button.grid(row=0, column=2, sticky=E)
 
 
