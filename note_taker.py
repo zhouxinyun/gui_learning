@@ -30,7 +30,7 @@ from tkinter import *
 
 # creates and sets up the window
 root = Tk()
-root.title("Lydia's Note Taker")
+root.title("Note Taker")
 root.option_add("*font", "Consolas 20")
 root.geometry("400x800")
 
@@ -71,7 +71,7 @@ def open_new_note(category):
     new_note_window = Toplevel(root)
 
     # creates and adds labels and text entry areas
-    new_note_title = Label(new_note_window, text="New Note")
+    new_note_title = Label(new_note_window, text="New {} Note".format(category))
     new_note_title.grid()
 
     title_label = Label(new_note_window, text="Title:")
@@ -99,7 +99,8 @@ def open_new_note(category):
                          text="Save",
                          command=lambda: save_note(new_note_window,
                                                    title_value.get(),
-                                                   note_text.get(1.0, END)))
+                                                   note_text.get(1.0, END),
+                                                   category))
 
     save_button.grid(row=0, column=2, sticky=E)
 
@@ -118,14 +119,14 @@ def open_list(list_category):
 
     # takes each note from the list, formats it and adds it to the window
     for note in notes:
-        title = note.get_title()
-        body = note.get_text()
-        category = note.get_category()
 
-        note_text = "***{}***\n{}\n".format(title, body)
+        category = note.get_category()
 
         # only add notes with the relevant category
         if category == list_category:
+            title = note.get_title()
+            body = note.get_text()
+            note_text = "***{}***\n{}\n".format(title, body)
             Label(list_window, text=note_text).grid(sticky=W)
 
 
