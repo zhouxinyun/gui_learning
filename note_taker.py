@@ -1,75 +1,98 @@
 class Note:
+    """
+    """
+
     def __init__(self, title, text, category):
         self.__title = title
         self.__text = text
         self.__category = category
 
     def get_title(self):
+        """Getter function: gets the note title
+        Returns: the title of the note
+        """
         return self.__title
 
     def get_text(self):
+        """Getter function: gets the note body text
+        Returns: the body text of the note
+        """
         return self.__text
 
     def get_category(self):
+        """Getter function: gets the note category
+        Returns: the category of the note
+        """
         return self.__category
 
 
 from tkinter import *
 
+# creates and sets up the window
 root = Tk()
-root.title("Note Taker")
+root.title("Lydia's Note Taker")
 root.option_add("*font", "Consolas 20")
-root.geometry("300x600")
-root.config(bg="grey")
+root.geometry("400x800")
 
+# this list is where all note objects will be stored
 notes = []
 
 
 def save_note(window, title, body, category="Shopping"):
-    print("Save Note")
-    print(title)
-    print(body.strip())
-    print(category)
+    """Saves a note to the note list then closes the parent window.
+    Args:
+        window: the window this function was called from
+        title: the title of the note to be saved
+        body: the body text of the note to be saved
+        category: the category of the note to be saved
+    """
 
+    # creates the note object, after cleaning up the input values
     new_note = Note(title.title().strip(),
                     body.title().strip(),
                     category.title().strip())
+
+    # add the note to the note list
     notes.append(new_note)
-    print("Title: {}".format(new_note.get_title()))
-    print("Body: {}".format(new_note.get_text()))
-    print("Category: {}".format(new_note.get_category()))
+    # print("Title: {}".format(new_note.get_title()))
+    # print("Body: {}".format(new_note.get_text()))
+    # print("Category: {}".format(new_note.get_category()))
+
+    # close the window this function was called from
     window.destroy()
 
 
-def open_new_note():
-    print("Open new note widow")
+def open_new_note(category):
+    """Creates a window for the user to enter their note in."""
+    print("Open new note window")
     title_value = StringVar()
-    text_value = StringVar()
 
+    # creates the window
     new_note_window = Toplevel(root)
 
+    # creates and adds labels and text entry areas
     new_note_title = Label(new_note_window, text="New Note")
-    new_note_title.grid(sticky=E + W)
+    new_note_title.grid()
 
-    title_label = Label(new_note_window, text="Title: ")
-    title_label.grid(sticky=W, columnspan=2)
+    title_label = Label(new_note_window, text="Title:")
+    title_label.grid(sticky=W)
 
-    title_entry = Entry(new_note_window, bg="grey", fg="white",
-                        textvariable=title_value)
+    title_entry = Entry(new_note_window, textvariable=title_value)
     title_entry.grid()
 
     note_label = Label(new_note_window, text="Note text:")
-    note_label.grid(sticky=W, columnspan=2)
+    note_label.grid(sticky=W)
 
     note_text = Text(new_note_window)
-    note_text.config(height=10, width=20, bg="grey", fg="white")
+    note_text.config(height=10, width=20)
     note_text.grid()
 
+    # a frame allows us to group GUI elements together
+    # this one will hold the buttons
     button_frame = Frame(new_note_window)
     button_frame.grid()
 
-    cancel_button = Button(button_frame, text="cancel",
-                           command=new_note_window.destroy)
+    cancel_button = Button(button_frame, text="Cancel", command=new_note_window.destroy)
     cancel_button.grid(row=0, column=1, sticky=E)
 
     save_button = Button(button_frame,
@@ -77,44 +100,66 @@ def open_new_note():
                          command=lambda: save_note(new_note_window,
                                                    title_value.get(),
                                                    note_text.get(1.0, END)))
+
     save_button.grid(row=0, column=2, sticky=E)
 
 
-def open_list(list_name):
-    print("Open {} List".format(list_name))
+def open_list(list_category):
+    """Opens a window with all of the notes of the given category.
+    Args:
+        list_category: the category this window should display
+    """
+    print("Open {}".format(list_category))
+
+    # creates and formats the window
     list_window = Toplevel(root)
-    list_window.title(list_name)
+    list_window.title(list_category)
+    list_window.geometry("600x400")
 
+    # takes each note from the list, formats it and adds it to the window
     for note in notes:
-        title = (note.get_title())
-        body = (note.get_text())
-        category = (note.get_category())
-        note_text = "*{}*\n {}\n".format(title, body)
-        Label(list_window, text=note_text).grid()
+        title = note.get_title()
+        body = note.get_text()
+        category = note.get_category()
+
+        note_text = "***{}***\n{}\n".format(title, body)
+
+        # only add notes with the relevant category
+        if category == list_category:
+            Label(list_window, text=note_text).grid(sticky=W)
 
 
-title = Label(root, text="Notes")
-title.config(font=("Times", "40"), width=10)
-title.grid(row=0, sticky=E + W + N + S)
+"""
+    The main (root) window is configured from here down.
+    It is not in a function so all widgets etc are globally accessible.
+"""
+lbl_title = Label(root, text="Notes")
+lbl_title.config(font=("Calibri", "30"), width=18)
+lbl_title.grid(row=0, sticky=N + E + S + W)
 
-new_note = Button(root, text="+ New note",
-                  command=lambda: open_new_note())
-new_note.config(font=("Times", "20"))
-new_note.grid(row=1, sticky=W + E)
+btn_shopping = Button(root, text="Shopping", command=lambda: open_list("Shopping"))
+btn_shopping.config()
+btn_shopping.grid(column=0, row=1, sticky=E + W)
 
-shopping = Button(root, text="Shopping List",
-                  command=lambda: open_list("Shopping"))
-shopping.config(font=("Times", "20"))
-shopping.grid(row=2, sticky=W + E)
+btn_shopping_new = Button(root, text="+", command=lambda: open_new_note("Shopping"))
+btn_shopping_new.config()
+btn_shopping_new.grid(column=1, row=1, sticky=E + W)
 
-todo = Button(root, text="To Do List",
-              command=lambda: open_list("To Do"))
-todo.config(font=("Times", "20"))
-todo.grid(row=3, sticky=W + E)
+btn_todo = Button(root, text="To do", command=lambda: open_list("To do"))
+btn_todo.config()
+btn_todo.grid(column=0, row=2, sticky=E + W)
 
-homework = Button(root, text="Homework",
-                  command=lambda: open_list("Homework"))
-homework.config(font=("Times", "20"))
-homework.grid(row=4, sticky=W + E)
+btn_todo_new = Button(root, text="+", command=lambda: open_new_note("To do"))
+btn_todo_new.config()
+btn_todo_new.grid(column=1, row=2, sticky=E + W)
 
+btn_homework = Button(root, text="Homework", command=lambda: open_list("Homework"))
+btn_homework.config()
+btn_homework.grid(column=0, row=3, sticky=E + W)
+
+btn_homework_new = Button(root, text="+", command=lambda: open_new_note("Homework"))
+btn_homework_new.config()
+btn_homework_new.grid(column=1, row=3, sticky=E + W)
+
+# this needs to be the last line - anything after this won't be seen
 root.mainloop()
