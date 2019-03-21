@@ -81,23 +81,79 @@ def get_student(fname):
     print("Student not found")
 
 
-def update_details():
-    student_name = student_selector.get(ACTIVE)
-    current_student = get_student(student_name)
-    str_name.set("Name: " + current_student.get_name())
-    str_age.set("Name: " + current_student.get_age())
-    str_colour.set("Name: " + current_student.get_colour())
-    str_phone.set("Name: " + current_student.get_phone())
-
-def edit_student():
-    edit_window = Toplevel(root)
-
-
 root = Tk()
 
 root.title("Manage Your Students")
 root.geometry("800x600")
 root.option_add("*Font", "LucidaGrande 20")
+
+
+def update_details():
+    student_name = student_selector.get(ACTIVE)
+    current_student = get_student(student_name)
+    print(current_student)
+
+    str_name.set("Name: " + current_student.get_name())
+    str_age.set("Name: " + current_student.get_age())
+    str_colour.set("Name: " + current_student.get_colour())
+    str_phone.set("Name: " + current_student.get_phone())
+
+
+def close_window(window):
+    window.destroy()
+
+
+def save_and_close(student, new_name, new_age, new_phone, new_colour, window, error):
+    student.set_name(new_name)
+    try:
+        student.set_age(int(new_age))
+    except ValueError:
+        error.set("Age must be a number")
+        return
+    student.set_phone(new_phone)
+    student.set_favourite_colour(new_colour)
+    update_student_selector()
+    update_details()
+    close_window(window)
+
+
+def create_and_close(new_name, new_age, new_phone, new_colour, window, error):
+    if "" in [new_name, new_age, new_phone, new_colour]:
+        error.set("No field can be blank")
+        return
+    try:
+        student = MyStudent(new_name, int(new_age), new_phone, new_colour)
+    except ValueError:
+        error.set("Age must be a whole number")
+        return
+    except TypeError as err:
+        error.set(err)
+        return
+    student_list.append(student)
+    update_student_selector()
+    update_details()
+    close_window(window)
+
+
+def edit_student():
+    edit_window = Toplevel(root)
+    edit_window.title("Edit student details")
+    edit_window.option_add("*Font", "LucidaGrande 20")
+
+    Label(edit_window, text="Name: ").grid(row=0, column=0, sticky=E)
+    Label(edit_window, text="Age: ").grid(row=1, column=0, sticky=E)
+    Label(edit_window, text="Phone Number: ").grid(row=2, column=0, sticky=E)
+    Label(edit_window, text="Favourite colour: ").grid(row=3, column=0, sticky=E)
+
+    student_name = student_selector.get(ACTIVE)
+    current_student = get_student(student_name)
+
+    str_current_name = StringVar(edit_window, current_student.get_name())
+    str_current_age = StringVar(edit_window, current_student.get_age())
+    str_current_phone = StringVar(edit_window, current_student.get_phone())
+    str_current_colour = StringVar(edit_window, current_student.get_colour())
+    str_error_msg = StringVar("")
+
 
 student_selector = Listbox(root, height=10)
 for student in student_list:
@@ -107,9 +163,7 @@ student_selector.grid(row=0, column=0, rowspan=10)
 update_button = Button(root, text="Update details>>", command=lambda: update_details())
 update_button.grid(row=10, column=0, sticky=E + W)
 
-edit_details = Button(root, text="Edit student details", command+lambda:edit_student())
-edit_details.grid(row=4, column=1, sticky =E+W)
-
-
+edit_details = Button(root, text="Edit student details", command=lambda: edit_student())
+edit_details.grid(row=4, column=1, sticky=E + W)
 
 root.mainloop()
