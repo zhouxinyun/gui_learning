@@ -283,11 +283,8 @@ def create_and_close(new_name, new_sell, new_restock, window, error):
         error.set("No field can be blank.")
         print("No field can be blank.")
         return
-    if int(new_sell) or int(new_restock) < 0:
-        error.set("New restock value and new sell value must >= 0.")
-        print("New restock value and new sell value must >= 0.")
     try:
-        student = Store(new_name, int(new_sell), int(new_restock))
+        book = Store(new_name, int(new_sell), int(new_restock))
     except ValueError:
         error.set("Restock value and Sell value must be a whole number.")
         print("Restock value and Sell value must be a whole number.")
@@ -296,8 +293,11 @@ def create_and_close(new_name, new_sell, new_restock, window, error):
         error.set(err)
         print("Error")
         return
-
-    books_list.append(student)
+    if int(new_sell) < 0 or int(new_restock) < 0:
+        error.set("New restock value and new sell value must >= 0.")
+        print("New restock value and new sell value must >= 0.")
+        return
+    books_list.append(book)
     update_book_selector()
     update_details()
     close_window(window)
