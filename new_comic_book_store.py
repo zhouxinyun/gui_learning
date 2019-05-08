@@ -275,6 +275,7 @@ def delete_and_close(book, window):
     books_list.remove(book)
     del book
     update_book_selector()
+    messagebox.showinfo("Success", "This book have been delete")
     close_window(window)
 
 
