@@ -1,268 +1,564 @@
-class MyStudent:
-    def __init__(self, name, age, phone, favourite_colour):
+class Store:
+    """ A class link to the Tkinter.
+    """
+
+    def __init__(self, name, price, sell, stock):
+        """Getter function: get the comic information in the books_list.
+        :param name: The title of the book which choose in books_list.
+        :param price: The price of the book which choose in books_list.
+        :param sell: The sell value of the book which choose in books_list.
+        :param stock: The stock value of the book which choose in books_list.
+        """
         self.__name = name
-        self.__age = age
-        self.__phone = phone
-        self.__favourite_colour = favourite_colour
-        self.__enrolled = True
+        self.__price = price
+        self.__sell = sell
+        self.__stock = stock
 
     def get_name(self):
+        """Getter function: gets the comic title.
+        :return: the title of the comic.
+        """
         return self.__name
 
-    def get_age(self):
-        return self.__age
+    def get_price(self):
+        """Getter function: gets the comic price.
+        :return: the price of the comic.
+        """
+        return self.__price
 
-    def add_one_year(self):
-        print("Current age: ", self.__age)
-        self.__age += 1
-        print("New age: ", self.__age)
+    def get_sell(self):
+        """ Getter function: gets the comic sell value.
+        :return: the sell value of the comic.
+        """
+        return self.__sell
 
-    def get_phone(self):
-        return self.__phone
-
-    def get_colour(self):
-        return self.__favourite_colour
-
-    def get_enrolment_status(self):
-        return self.__enrolled
-
-    def enrol(self):
-        self.__enrolled = False
+    def get_stock(self):
+        """Getter function: gets the comic stock value.
+        :return: the stock value of the comic.
+        """
+        return self.__stock
 
     def set_name(self, new_name):
-        if new_name == "" or new_name is None or type(new_name) is not str:
-            print("Name should be a string")
-            return
         self.__name = new_name
 
-    def set_age(self, new_age):
-        if new_age is None or type(new_age) is not int:
-            print("Age must be an integer")
+    def set_price(self, new_price):
+        if int(new_price) <= 0:
+            messagebox.showerror("Error", "Price must be a positive number.")
+            print("Price must be a positive number.")
             return
-        if new_age <= 0:
-            print("Age must be positive number.")
+        self.__price = int(new_price)
+
+    def set_sell(self, new_sell):
+        if int(new_sell) < 0:
+            messagebox.showerror("Error", "Sell value must be a number which is >= 0.")
+            print("Sell value must be a number which is >= 0.")
             return
-        self.__age = new_age
+        self.__price = int(new_sell)
 
-    def set_favourite_colour(self, new_favourite_colour):
-        if new_favourite_colour == "" or new_favourite_colour is None or type(new_favourite_colour) is not str:
-            print("Colour must be a string")
+    def set_stock(self, new_stock):
+        if int(new_stock) <= 0:
+            messagebox.showerror("Error", "Stock value must be a number which is >= 0.")
+            print("Stock value must be a number which is >= 0.")
             return
-        self.__favourite_colour = new_favourite_colour
+        self.__price = int(new_stock)
 
-    def print_details(self):
-        print("Name: ", self.__name)
-        print("Age: ", self.__age)
-        print("Phone Number: ", self.__phone)
-        print("Favourite colour: ", self.__favourite_colour)
+    def sell_one(self):
+        """ Calculate the comic number which have been sold and books leave in stock.
+        Shown Error message when program is not working.
+        :return: If stock value is less than or equal to 0, the sell and stock don't have any changes
+        """
 
-        if self.__enrolled:
-            print("Enrolment status: enrolled.")
+        # check the stock value and calculate.
+        if self.__stock > 0:
+            self.__stock = self.__stock - 1
+            self.__sell = self.__sell + 1
+            print("One comic have been sold.")
+            print("Sold: {}".format(self.__sell))
+            print("stock: {}".format(self.__stock))
+            messagebox.showinfo("Sell", "One comic have been sold")
 
-        else:
-            print("Enrolment status: not enrolled.")
+        # if there are no stock, the comic could not sold.
+        if self.__stock <= 0:
+            messagebox.showerror("Sell", "Sorry, there are 0 stock for this book")
+            print("There are no stock for this book.")
+            return
+
+    def restock(self, restock):
+        """Calculate the restock when we add new restock in.
+        Shown Error message when program is not working.
+        :param restock: restock value should be type in.
+        :return: If restock value is less than or equal to 0, the restock can't add in. If restock value is bigger than or equal to 100, the restock can't add in as well.
+        """
+        # if the value of restock which is type in is less than or equal to 0, the program should have an message box to show Error.
+        if restock <= 0:
+            print("Restock value must be a positive whole number.")
+            messagebox.showerror("Error", "Restock value must be a positive number.")
+            return
+
+        # if the value of stock which is type in is bigger than or equal to 100, the program should have an message box to show Error.
+        if restock >= 100:
+            print("Restock must less than 100.")
+            messagebox.showerror("Error", "Restock must less than 100.")
+            return
+
+        # if the value of restock which is type in is correct, calculate the total restock.
+        if 0 < restock < 100:
+            self.__stock += restock
+            print("{} comic(s) have been added.".format(restock))
+            messagebox.showinfo("Restock", "{} comic(s) have been added.".format(restock))
 
 
 from tkinter import *
+from tkinter import messagebox
 
-student_list = []
-student_list.append(MyStudent("Jacqui", 68, "0800dominos", "purple"))
-student_list.append(MyStudent("Zara", 34, "1234", "red"))
-student_list.append(MyStudent("Eliza", 18, "47325", "orange"))
-student_list.append(MyStudent("Hanna", 17, "384278346891", "pink"))
-student_list.append(MyStudent("Lina", 5, "5678", "black"))
-student_list.append(MyStudent("Cate", 12, "999999999", "yellow"))
-
-
-def get_student(fname):
-    for student in student_list:
-        if student.get_name() == fname:
-            return student
-    print("Student not found")  # debug message, will print to console
+# this list carry all information about these comics.
+books_list = []
+books_list.append(Store("Super Dude", "3", 0, 8))
+books_list.append(Store("Lizard Man", "4", 0, 12))
+books_list.append(Store("Water Woman", "2.5", 0, 3))
 
 
+def get_book(name):
+    """Getter function: Get books information in the books_list.
+    :param name: Choose a book when this book is in the book_list.
+    :return: Get this book's information.
+    """
+    # choose one comic in the books_list and get its' information.
+    for book in books_list:
+        if book.get_name() == name:
+            return book
+
+
+# creates and sets up the window.
 root = Tk()
+root.title("Comic Book Store System")
+root.geometry("590x390")
+root.option_add("*Font", "LucidaGrande 20")
 
-root.title("Manage Your Students")  # sets the title of the window
-root.geometry("800x600")
-root.option_add("*Font", "LucidaGrande 20")  # default font and size for every widget
+
+def details():
+    """Get comic's information and shows them in a window.
+    :return: Shows this comic book's information in this window.
+    """
+    # create a new window to show the comic's information.
+    detail_window = Toplevel(root)
+    detail_window.title("Detail")
+    detail_window.option_add("*Font", "LucidaGrande 20")
+    detail_window.geometry("300x200")
+
+    # choose one comic in books_list and get its information.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+    print("Open {} detail".format(current_book.get_name()))
+
+    # make a label shows this book's title.
+    lbl_name = Label(detail_window, text="Name: " + current_book.get_name())
+    lbl_name.grid(row=0, column=0, sticky=E + W)
+
+    lbl_price = Label(detail_window, text="Price: " + str(current_book.get_price()))
+    lbl_price.grid(row=1, column=0, sticky=E + W)
+
+    # make a label shows this book's sell value.
+    lbl_sell = Label(detail_window, text="Sell: " + str(current_book.get_sell()))
+    lbl_sell.grid(row=2, column=0, sticky=E + W)
+
+    # make a label shows this book's stock value.
+    lbl_stock = Label(detail_window, text="Stock: " + str(current_book.get_stock()))
+    lbl_stock.grid(row=3, column=0, sticky=E + W)
+
+    # make a close window button.
+    btn_close = Button(detail_window, text="Close", command=lambda: close_window(detail_window))
+    btn_close.grid(row=4, column=0, sticky=E + W)
 
 
-def update_details():
-    student_name = student_selector.get(ACTIVE)
-    current_student = get_student(student_name)
-    print(current_student)
+def sell_book():
+    """Sell one comic, mines 1 from stock and plus one on sell.
+    :return: Get sell value and stock value, calculate the new sell and stock value.
+    """
+    # get the stock and sell value from books_list.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
 
-    str_name.set("Name: " + current_student.get_name())
-    str_age.set("Age: " + str(current_student.get_age()))
-    str_phone.set("Phone: " + current_student.get_phone())
-    str_colour.set("Colour: " + current_student.get_favecolour())
+    current_book.sell_one()
+
+
+def stock_book():
+    """Add some books in stock, added value must be a number and it is positive, it will shows error info.
+    :return: Get old stock value and plus restock value, get a total stock value and shown in detail window.
+    """
+    # create a new window
+    stock_window = Toplevel(root)
+    stock_window.title("Sell One Comic")
+    stock_window.option_add("*Font", "LucidaGrande 20")
+    stock_window.geometry("510x150")
+
+    # get a book's information which chosen in list box.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+
+    # ask how many books added in stock.
+    lbl_restock_book_text = Label(stock_window, text="How many books do you want to restock?")
+    lbl_restock_book_text.grid(row=0, columnspan=2)
+
+    str_current_restock = StringVar()
+
+    # create an input box that only can type the number in it.
+    ent_restock_value = Entry(stock_window, textvariable=str_current_restock)
+    ent_restock_value.grid(row=1, columnspan=2, sticky=E + W)
+
+    # create a button can add restock value into total stock value.
+    btn_save = Button(stock_window, text="Save",
+                      command=lambda: save(current_book, str_current_restock.get(), stock_window))
+    btn_save.grid(row=3, column=0)
+
+    # create a button can cancel this operating.
+    btn_cancel = Button(stock_window, text="Cancel", command=lambda: close_window(stock_window))
+    btn_cancel.grid(row=3, column=1)
+
+
+def create_new_book():
+    """ Create a new book in books_list.
+    :return: Add new book's info in to the books_list.
+    """
+    # create a new window.
+    new_book_window = Toplevel(root)
+    new_book_window.title("Enrol new Book")
+    new_book_window.option_add("*Font", "LucidaGrande 20")
+
+    # ask for new book's Title.
+    title = Label(new_book_window, text="Nane:")
+    title.grid(row=0, column=0, sticky=E)
+
+    price = Label(new_book_window, text="Price:")
+    price.grid(row=1, column=0, sticky=E)
+
+    # ask for new book's Sell.
+    sell_value = Label(new_book_window, text="Sell:")
+    sell_value.grid(row=2, column=0, sticky=E)
+
+    # ask for new book's stock.
+    stock_value = Label(new_book_window, text="Stock:")
+    stock_value.grid(row=3, column=0, sticky=E)
+
+    str_new_name = StringVar("")
+    str_new_price = StringVar("")
+    str_new_sell = StringVar("")
+    str_new_stock = StringVar("")
+    str_error_msg = StringVar("")
+
+    # create an input box which could type book title in it.
+    ask_title = Entry(new_book_window, textvariable=str_new_name)
+    ask_title.grid(row=0, column=1, sticky=E + W)
+
+    ask_price = Entry(new_book_window, textvariable=str_new_price)
+    ask_price.grid(row=1, column=1, sticky=E + W)
+
+    # create an input box which could type book sell in it.
+    ask_sell = Entry(new_book_window, textvariable=str_new_sell)
+    ask_sell.grid(row=2, column=1, sticky=E + W)
+
+    # create an input box which could type book stock in it.
+    ask_stock = Entry(new_book_window, textvariable=str_new_stock)
+    ask_stock.grid(row=3, column=1, sticky=E + W)
+
+    # a label shows error message.
+    lbl_error = Label(new_book_window, textvariable=str_error_msg, fg="red")
+    lbl_error.grid(row=4, column=0, columnspan=2, sticky=N + E + S + W)
+
+    # create a button can save these information.
+    btn_creat = Button(new_book_window, text="Create", command=lambda: create_and_close(str_new_name.get(),
+                                                                                        str_new_price.get(),
+                                                                                        str_new_sell.get(),
+                                                                                        str_new_stock.get(),
+                                                                                        new_book_window,
+                                                                                        str_error_msg))
+    btn_creat.grid(row=5, column=0, sticky=W)
+
+    # create a button can close this window and cancel this edit.
+    btn_close = Button(new_book_window, text="Cancel", command=lambda: close_window(new_book_window))
+    btn_close.grid(row=5, column=1, sticky=E)
+
+
+def delete_book(book):
+    """Delete a book which chosen from books_list
+    :param book: a book which chosen currently
+    :return: delete this book
+    """
+    # create a new window.
+    delete_book_window = Toplevel(root)
+    delete_book_window.title("Delete this book?")
+    delete_book_window.option_add("*Font", "LucidaGrande 20")
+
+    # rechecked delete this book.
+    lbl_check = Label(delete_book_window, text="Are you sure you want to delete {}?".format(book.get_name()))
+    lbl_check.grid(row=0, column=0, columnspan=2, sticky=N + E + S + W)
+
+    # do not delete this book and destroy this window.
+    btn_cancel = Button(delete_book_window, text="Cancel", command=lambda: close_window(delete_book_window))
+    btn_cancel.grid(row=1, column=1, sticky=W)
+
+    # delete this book and destroy this window.
+    btn_delete_check = Button(delete_book_window, text="Delete Book",
+                              command=lambda: delete_and_close(book, delete_book_window))
+    btn_delete_check.grid(row=1, column=0, sticky=E)
+
+
+def edit_book():
+    edit_window = Toplevel(root)
+    edit_window.title("Edit comic's details")
+    edit_window.option_add("*Font", "LucidaGrande 20")
+
+    lbl_title = Label(edit_window, text="Name:")
+    lbl_title.grid(row=0, column=0, sticky=E)
+
+    lbl_price = Label(edit_window, text="Price:")
+    lbl_price.grid(row=1, column=0, sticky=E)
+
+    lbl_sell = Label(edit_window, text="Sell:")
+    lbl_sell.grid(row=2, column=0, sticky=E)
+
+    lbl_stock = Label(edit_window, text="Stock: ")
+    lbl_stock.grid(row=3, column=0, sticky=E)
+
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+
+    str_current_name = StringVar(edit_window, current_book.get_name())
+    str_current_price = StringVar(edit_window, str(current_book.get_price()))
+    str_current_sell = StringVar(edit_window, str(current_book.get_sell()))
+    str_current_stock = StringVar(edit_window, str(current_book.get_stock()))
+    str_error_msg = StringVar("")
+
+    title = Entry(edit_window, textvariable=str_current_name)
+    title.grid(row=0, column=1, sticky=E + W)
+
+    price = Entry(edit_window, textvariable=str_current_price)
+    price.grid(row=1, column=1, sticky=E + W)
+
+    sell = Entry(edit_window, textvariable=str_current_sell)
+    sell.grid(row=2, column=1, sticky=E + W)
+
+    stock = Entry(edit_window, textvariable=str_current_stock)
+    stock.grid(row=3, column=1, sticky=E + W)
+
+    lbl_error = Label(edit_window, textvariable=str_error_msg, fg="red")
+    lbl_error.grid(row=4, column=0, columnspan=2, sticky=N + E + S + W)
+
+    btn_save = Button(edit_window, text="Save", command=lambda: save_and_close(current_book,
+                                                                               str_current_name.get(),
+                                                                               str_current_price.get(),
+                                                                               str_current_sell.get(),
+                                                                               str_current_stock.get(),
+                                                                               edit_window,
+                                                                               str_error_msg))
+    btn_save.grid(row=5, column=1, sticky=W)
+
+    btn_close = Button(edit_window, text="Cancel", command=lambda: close_window(edit_window))
+    btn_close.grid(row=5, column=0, sticky=E)
+
+
+def update_book_selector():
+    """Make a book selector that can choose a book in books_list list box.
+    :return: Get this books information.
+    """
+    book_selector.delete(0, END)
+    for book in books_list:
+        book_selector.insert(END, book.get_name())
 
 
 def close_window(window):
+    """A program that can close current window.
+    :param window: Current window.
+    :return: Close current window.
+    """
     window.destroy()
 
 
-def save_and_close(student, new_name, new_age, new_phone, new_colour, window, error):
-    student.set_name(new_name)
+def save(book, restock, window):
+    """Check whether new restock value is a number, and add it into old stock value. Shows error information.
+    :param book: Current book which chosen in books_list list box.
+    :param restock: The value which type into the input box.
+    :param window: Current window.
+    :return: Add restock value in to old stock value.
+    """
+    # check whether new restock value is a number.
     try:
-        student.set_age(int(new_age))
+        book.restock(int(restock))
     except ValueError:
-        error.set("Age must be a number")
-        return
-    student.set_phone(new_phone)
-    student.set_favourite_colour(new_colour)
-    update_student_selector()
-    update_details()
+        print("Restock value must be a whole number.")
+        messagebox.showerror("Error", "Restock value must be a number.")
+    except TypeError:
+        print("Error")
+        messagebox.showerror("Error", "Error")
+    # destroy stock_window.
     close_window(window)
 
 
-def create_and_close(new_name, new_age, new_phone, new_colour, window, error):
-    if "" in [new_name, new_age, new_phone, new_colour]:
-        error.set("No field can be blank")
+def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error):
+    if "" in [new_name, new_price, new_sell, new_stock]:
+        error.set("No field can be blank.")
+        print("No field can be blank.")
         return
+
+    book.set_name(new_name)
+
     try:
-        student = MyStudent(new_name, int(new_age), new_phone, new_colour)
+        book.set_price(new_price)
     except ValueError:
-        error.set("Age must be a whole number")
+        error.set("Price must be a positive number.")
+        print("Price must be a positive number.")
         return
     except TypeError as err:
         error.set(err)
+        print("Error")
         return
-    student_list.append(student)
-    update_student_selector()
+
+    try:
+        book.set_sell(new_sell)
+    except ValueError:
+        error.set("Sell value must be a number which is >=0.")
+        print("Sell value must be a number which is >=0.")
+        return
+    except TypeError as err:
+        error.set(err)
+        print("Error")
+        return
+
+    try:
+        book.set_stock(new_stock)
+    except ValueError:
+        error.set("Stock value must be a number which is >=0.")
+        print("Stock value must be a number which is >=0.")
+        return
+    except TypeError as err:
+        error.set(err)
+        print("Error")
+        return
+
+    update_book_selector()
     update_details()
+    # destroy current window.
     close_window(window)
 
 
-def edit_student():
-    edit_window = Toplevel(root)
-    edit_window.title("Edit student details")
-    edit_window.option_add("*Font", "LucidaGrande 20")
+def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
+    """ Create a new book in books_list and add it's information in books_list.
+    :param new_name: New book's title.
+    :param new_sell: The value of new book have been sold.
+    :param new_stock: The value of new book's stock.
+    :param window: The current window.
+    :param error: Shows error message when program gets wrong.
+    :return: Add new book's info into books_list.
+    """
+    # check if any blank info, shows error message.
+    if "" in [new_name, new_price, new_sell, new_stock]:
+        error.set("No field can be blank.")
+        print("No field can be blank.")
+        return
 
-    Label(edit_window, text="Name:").grid(row=0, column=0, sticky=E)
-    Label(edit_window, text="Age:").grid(row=1, column=0, sticky=E)
-    Label(edit_window, text="Phone number:").grid(row=2, column=0, sticky=E)
-    Label(edit_window, text="Favourite colour:").grid(row=3, column=0, sticky=E)
+    # check price, sell value and stock value be a number, shows error message.
+    try:
+        book = Store(new_name, int(new_price), int(new_sell), int(new_stock))
+    except ValueError:
+        error.set("Price, Stock value and Sell value must be a number.")
+        print("Price, Stock value and Sell value must be a number.")
+        return
+    except TypeError as err:
+        error.set(err)
+        print("Error")
+        return
 
-    student_name = student_selector.get(ACTIVE)
-    current_student = get_student(student_name)
+    # check if price, sell value and stock value be a positive number, shows error message.
+    if int(new_price) < 0:
+        error.set("Price must be a positive number.")
+        return
+    elif int(new_sell) < 0 or int(new_stock) < 0:
+        error.set("Stock value and Sell value must be a whole number which is >= 0.")
+        print("Stock value and Sell value must be a whole number which is >= 0.")
+        return
 
-    str_current_name = StringVar(edit_window, current_student.get_name())
-    str_current_age = StringVar(edit_window, str(current_student.get_age()))
-    str_current_phone = StringVar(edit_window, current_student.get_phone())
-    str_current_colour = StringVar(edit_window, current_student.get_favecolour())
-    str_error_msg = StringVar("")
-
-    Entry(edit_window, textvariable=str_current_name).grid(row=0, column=1, sticky=E + W)
-    Entry(edit_window, textvariable=str_current_age).grid(row=1, column=1, sticky=E + W)
-    Entry(edit_window, textvariable=str_current_phone).grid(row=2, column=1, sticky=E + W)
-    Entry(edit_window, textvariable=str_current_colour).grid(row=3, column=1, sticky=E + W)
-
-    Label(edit_window, textvariable=str_error_msg, fg="red").grid(row=4, column=0, columnspan=2, sticky=N + E + S + W)
-
-    Button(edit_window, text="Cancel", command=lambda: close_window(edit_window)).grid(row=5, column=0, sticky=E)
-    Button(edit_window, text="Save", command=lambda: save_and_close(current_student,
-                                                                    str_current_name.get(),
-                                                                    str_current_age.get(),
-                                                                    str_current_phone.get(),
-                                                                    str_current_colour.get(),
-                                                                    edit_window,
-                                                                    str_error_msg)).grid(row=5, column=1, sticky=W)
-
-
-def new_student():
-    new_student_window = Toplevel(root)
-    new_student_window.title("Enrol new student")
-    new_student_window.option_add("*Font", "LucidaGrande 20")
-
-    Label(new_student_window, text="Name:").grid(row=0, column=0, sticky=E)
-    Label(new_student_window, text="Age:").grid(row=1, column=0, sticky=E)
-    Label(new_student_window, text="Phone number:").grid(row=2, column=0, sticky=E)
-    Label(new_student_window, text="Favourite colour:").grid(row=3, column=0, sticky=E)
-
-    str_new_name = StringVar("")
-    str_new_age = StringVar("")
-    str_new_phone = StringVar("")
-    str_new_colour = StringVar("")
-    str_error_msg = StringVar("")
-
-    Entry(new_student_window, textvariable=str_new_name).grid(row=0, column=1, sticky=E + W)
-    Entry(new_student_window, textvariable=str_new_age).grid(row=1, column=1, sticky=E + W)
-    Entry(new_student_window, textvariable=str_new_phone).grid(row=2, column=1, sticky=E + W)
-    Entry(new_student_window, textvariable=str_new_colour).grid(row=3, column=1, sticky=E + W)
-
-    Label(new_student_window, textvariable=str_error_msg, fg="red").grid(row=4, column=0, columnspan=2,
-                                                                         sticky=N + E + S + W)
-
-    Button(new_student_window, text="Cancel", command=lambda: close_window(new_student_window)).grid(row=5, column=0,
-                                                                                                     sticky=E)
-    Button(new_student_window, text="Create", command=lambda: create_and_close(str_new_name.get(),
-                                                                               str_new_age.get(),
-                                                                               str_new_phone.get(),
-                                                                               str_new_colour.get(),
-                                                                               new_student_window,
-                                                                               str_error_msg)).grid(row=5, column=1,
-                                                                                                    sticky=W)
-
-
-def delete_student(student):
-    delete_student_window = Toplevel(root)
-    delete_student_window.title("Delete student?")
-    delete_student_window.option_add("*Font", "LucidaGrande 20")
-
-    Label(delete_student_window, text="Are you sure you want to delete {}?".format(student.get_name())).grid(row=0,
-                                                                                                             column=0,
-                                                                                                             columnspan=2,
-                                                                                                             sticky=N + E + S + W)
-    Button(delete_student_window, text="Cancel", command=lambda: close_window(delete_student_window)).grid(row=1,
-                                                                                                           column=0,
-                                                                                                           sticky=E)
-    Button(delete_student_window, text="Delete student",
-           command=lambda: delete_and_close(student, delete_student_window)).grid(row=1, column=1, sticky=W)
-
-
-def delete_and_close(student, window):
-    student_list.remove(student)
-    del student
-    update_student_selector()
+    # add information into books_list.
+    books_list.append(book)
+    update_book_selector()
+    details()
+    # destroy current window.
     close_window(window)
 
 
-def update_student_selector():
-    student_selector.delete(0, END)
-    for student in student_list:
-        student_selector.insert(END, student.get_name())
+def delete_and_close(book, window):
+    """Delete this book from books_list include this book's information.
+    :param book: a book which chosen in books_list.
+    :param window: Current window.
+    :return: Remove current book from books_list
+    """
+    # remove selected book.
+    books_list.remove(book)
+    del book
+    update_book_selector()
+    # info shows delete successful.
+    messagebox.showinfo("Success", "This book have been delete")
+    # destroy current window.
+    close_window(window)
 
 
-student_selector = Listbox(root, height=10)  # creates the listbox
-# student_selector.insert(1, *student_list)          # adds all items from student_list
-update_student_selector()
-student_selector.grid(row=0, column=0, rowspan=10)  # puts the listbox onto the window
+def update_details():
+    """ Upload new book's information into books_list.
+    :return: Shows information in details.
+    """
+    # choose one comic in books_list and get its information.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+    print(current_book)
 
-# the button to update the details area
-update_button = Button(root, text="Update details>>", command=lambda: update_details()).grid(row=10, column=0,
-                                                                                             sticky=E + W)
+    # StringVars show different information.
+    str_name = StringVar(value="Title: ")
+    str_price = StringVar(value="Price: ")
+    str_sell = StringVar(value="Sell: ")
+    str_stock = StringVar(value="Stock: ")
 
-# variables for storing label text in
-str_name = StringVar(value="Full name: ")
-str_age = StringVar(value="Age: ")
-str_phone = StringVar(value="Phone: ")
-str_colour = StringVar(value="Favourite colour: ")
+    # put this book's information in each StringVar.
+    str_name.set("Title: " + current_book.get_name())
+    str_price.set("Price: " + str(current_book.get_price()))
+    str_sell.set("Sell Value: " + str(current_book.get_sell()))
+    str_stock.set("Stock Value: " + str(current_book.get_stock()))
 
-# labels for all of the student details
-full_name = Label(root, textvariable=str_name).grid(row=0, column=1, sticky=W)
-age = Label(root, textvariable=str_age).grid(row=1, column=1, sticky=W)
-phone_num = Label(root, textvariable=str_phone).grid(row=2, column=1, sticky=W)
-fave_color = Label(root, textvariable=str_colour).grid(row=3, column=1, sticky=W)
 
-btn_new_student = Button(root, text="Create\nnew\nstudent", bg="#99cc99", command=lambda: new_student()).grid(row=4,
-                                                                                                              column=1,
-                                                                                                              sticky=N + E + S + W)
-btn_edit_details = Button(root, text="Edit\nstudent\ndetails", bg="#9999cc", command=lambda: edit_student()).grid(row=4,
-                                                                                                                  column=2,
-                                                                                                                  sticky=N + E + S + W)
-btn_delete_student = Button(root, text="Delete\nstudent", bg="#cc9999", command=lambda: delete_student(get_student(
-    student_selector.get(ACTIVE)))).grid(row=4, column=3, sticky=N + E + S + W)
+# make a list box that can choose different books.
+book_selector = Listbox(root, height=10)
+# get the information of this book which selected.
+update_book_selector()
+book_selector.grid(row=0, column=0, rowspan=8)
+
+for book in books_list:
+    book_selector.insert(END)
+book_selector.grid()
+
+# create button can shows detail window.
+btn_detail = Button(root, text="DETAIL", fg="black", command=lambda: details())
+btn_detail.grid(row=0, column=1, sticky=E + W)
+
+# create button can shows sell books window, it also can mines stock, add sell value.
+btn_sell = Button(root, text="SELL ONE COMIC", fg="black", command=lambda: sell_book())
+btn_sell.grid(row=1, column=1, sticky=E + W)
+
+# create button can shows restock books window, it also can calculate total stock  value.
+btn_restock = Button(root, text="RESTOCK COMIC", fg="black", command=lambda: stock_book())
+btn_restock.grid(row=2, column=1, sticky=E + W)
+
+# create button can added new book in the books_list, which is include new book's information.
+btn_new_book = Button(root, text="CREATE NEW BOOK", fg="black", command=lambda: create_new_book())
+btn_new_book.grid(row=3, column=1, sticky=E + W)
+
+# create button can delete current book in the books_list, include this book's information.
+btn_delete = Button(root, text="DELETE THIS BOOK", fg="black",
+                    command=lambda: delete_book(get_book(book_selector.get(ACTIVE))))
+btn_delete.grid(row=4, column=1, sticky=E + W)
+
+btn_edit_book = Button(root, text="EDIT THIS BOOK", fg="black", command=lambda: edit_book())
+btn_edit_book.grid(row=5, column=1, sticky=E + W)
+
+# create button can close comic_book_store system.
+btn_exit = Button(root, text="EXIT", fg="black", command=lambda: close_window(root))
+btn_exit.grid(row=6, column=1, sticky=E + W)
 
 root.mainloop()
