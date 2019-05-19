@@ -10,9 +10,9 @@ class Store:
         :param stock: The stock value of the book which choose in books_list.
         """
         self.__name = name
-        self.__price = price
-        self.__sell = sell
-        self.__stock = stock
+        self.__price = int(price)
+        self.__sell = int(sell)
+        self.__stock = int(stock)
 
     def get_name(self):
         """Getter function: gets the comic title.
@@ -86,9 +86,9 @@ class Store:
         :return:
         """
         # check the stock value and calculate.
-        if self.__stock > 0:
-            self.__stock = self.__stock - 1
-            self.__sell = self.__sell + 1
+        if int(self.__stock) > 0:
+            self.__stock = int(self.__stock) - 1
+            self.__sell = int(self.__sell) + 1
             print("One comic have been sold.")
             print("Sold: {}".format(self.__sell))
             print("stock: {}".format(self.__stock))
@@ -107,22 +107,22 @@ class Store:
         :return:
         """
         # if the restock is less than or equal to 0, the program should have an message box to show Error.
-        if restock <= 0:
+        if int(restock) <= 0:
             print("Restock value must be a positive whole number.")
             messagebox.showerror("Error", "Restock value must be a positive number.")
             return
 
         # if the restock is greater than or equal to 100, the program should have an message box to show Error.
-        if restock >= 100:
+        if int(restock) >= 100:
             print("Restock must less than 100.")
             messagebox.showerror("Error", "Restock must less than 100.")
             return
 
         # if the value of restock which is type in is correct, calculate the total restock.
-        if 0 < restock < 100:
-            self.__stock += restock
-            print("{} comic(s) have been added.".format(restock))
-            messagebox.showinfo("Restock", "{} comic(s) have been added.".format(restock))
+        if 0 < int(restock) < 100:
+            self.__stock += int(restock)
+            print("{} comic(s) have been added.".format(int(restock)))
+            messagebox.showinfo("Restock", "{} comic(s) have been added.".format(int(restock)))
 
 
 from tkinter import *
@@ -130,9 +130,9 @@ from tkinter import messagebox
 
 # this list carry all information about these comics.
 books_list = []
-books_list.append(Store("Super Dude", "3", 0, 8))
-books_list.append(Store("Lizard Man", "4", 0, 12))
-books_list.append(Store("Water Woman", "2.5", 0, 3))
+books_list.append(Store("Super Dude", 3, 0, 8))
+books_list.append(Store("Lizard Man", 4, 0, 12))
+books_list.append(Store("Water Woman", 2.5, 0, 3))
 
 
 def get_book(name):
@@ -354,9 +354,9 @@ def edit_book():
 
     # Upload this book's information into this window.
     str_current_name = StringVar(edit_window, current_book.get_name())
-    str_current_price = StringVar(edit_window, str(current_book.get_price()))
-    str_current_sell = StringVar(edit_window, str(current_book.get_sell()))
-    str_current_stock = StringVar(edit_window, str(current_book.get_stock()))
+    str_current_price = StringVar(edit_window, int(current_book.get_price()))
+    str_current_sell = StringVar(edit_window, int(current_book.get_sell()))
+    str_current_stock = StringVar(edit_window, int(current_book.get_stock()))
     str_error_msg = StringVar("")
 
     # create an input box which could change book title in it.
