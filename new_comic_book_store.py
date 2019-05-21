@@ -141,8 +141,8 @@ books_list.append(Comic_book("Water Woman", 2.5, 0, 3))
 
 def get_book(name):
     """Getter function: Get books information in the books_list.
-    :param name: choose a book when this book is in the book_list.
-    :return: there are no book have been chosen in Listbox.
+    :param name: choose a book from the book_list.
+    :return: Get info about this book.
     """
     # choose one comic in the books_list and get its' information.
     for book in books_list:
@@ -394,8 +394,9 @@ def edit_book():
 
 
 def update_book_selector():
-    """ Upload current book's information.
+    """ Delete the old information and add new info to books list.
     """
+    # Choose a book from the Listbox.
     book_selector.delete(0, END)
     for book in books_list:
         book_selector.insert(END, book.get_name())
