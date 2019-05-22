@@ -16,25 +16,25 @@ class Comic_book:
 
     def get_name(self):
         """Getter function: gets the comic title.
-        :return: the title of the comic.
+        :return: get the title of the comic.
         """
         return self.__name
 
     def get_price(self):
         """Getter function: gets the comic price.
-        :return: the price of the comic.
+        :return: get the price of the comic.
         """
         return self.__price
 
     def get_sell(self):
         """ Getter function: gets the comic sell number.
-        :return: the sell number of the comic.
+        :return: get the sell number of the comic.
         """
         return self.__sell
 
     def get_stock(self):
         """ Getter function: gets the comic stock number.
-        :return: the stock number of the comic.
+        :return: get the stock number of the comic.
         """
         return self.__stock
 
@@ -154,7 +154,7 @@ books_list.append(Comic_book("Water Woman", 2.5, 0, 3))
 def get_book(name):
     """Getter function: Get books information in the books_list.
     :param name: choose a book from the book_list.
-    :return: Get info about this book.
+    :return: Get information about this book.
     """
     # choose one comic in the books_list and get its' information.
     for book in books_list:
@@ -214,7 +214,7 @@ def sell_book():
     current_book.sell_one()
 
 
-def stock_book():
+def restock_book():
     """Add some books in stock, added value must be a number and it is positive, it will shows error info.
     """
     # create a new window
@@ -426,24 +426,24 @@ def save(book, restock, window):
     :param book: Current book which chosen in books_list.
     :param restock: The value which type into the input box.
     :param window: Current window.
-    :return: Add restock in to old stock.
+    :return: this restock unsuccessful.
     """
     # check whether any blank box.
     if "" in [restock]:
         print("No field can be blank.")
         messagebox.showerror("Error", "No field can be blank.")
+        return
     # check whether new restock is a number.
-    else:
-        try:
-            book.restock(int(restock))
-        except ValueError:
-            print("Restock must be a whole number.")
-            messagebox.showerror("Error", "Restock must be a number.")
-            return
-        except TypeError:
-            print("Error")
-            messagebox.showerror("Error", "Error")
-            return
+    try:
+        book.restock(int(restock))
+    except ValueError:
+        print("Restock must be a whole number.")
+        messagebox.showerror("Error", "Restock must be a number.")
+        return
+    except TypeError:
+        print("Error")
+        messagebox.showerror("Error", "Error")
+        return
     # destroy stock_window.
     close_window(window)
 
@@ -457,7 +457,7 @@ def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error
     :param new_stock: Change this book's stock.
     :param window: Current window.
     :param error: Show error message.
-    :return: Upload information into books_list.
+    :return: cancel this edit.
     """
     # check whether any blank box.
     if "" in [new_name, new_price, new_sell, new_stock]:
@@ -495,7 +495,7 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
     :param new_stock: The number of new book's stock.
     :param window: The current window.
     :param error: Shows error message when program gets wrong.
-    :return: Add new book's info into books_list.
+    :return: Cancel create new book.
     """
     # check if any blank info, shows error message.
     if "" in [new_name, new_price, new_sell, new_stock]:
@@ -520,10 +520,12 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         error.set("Price must be a positive number.")
         print("Price must be a positive number.")
         return
+    # check if sell number and stock number is less than or equal to 0.
     if int(new_sell) < 0 or int(new_stock) <= 0:
         error.set("Stock and Sell must be a whole number which is >= 0.")
         print("Stock and Sell must be a whole number which is >= 0.")
         return
+    # check whether stock is less than 100.
     if int(new_stock) >= 100:
         error.set("Stock must less than 100.")
         print("Stock must less than 100.")
@@ -541,7 +543,7 @@ def delete_and_close(book, window):
     :param book: a book which chosen in books_list.
     :param window: Current window.
     """
-    # remove selected book.
+    # remove the book which selected.
     books_list.remove(book)
     del book
     update_book_selector()
@@ -590,7 +592,7 @@ btn_sell = Button(root, text="SELL ONE COMIC", fg="black", command=lambda: sell_
 btn_sell.grid(row=1, column=1, sticky=E + W)
 
 # create button can shows restock books window, it also can calculate total stock  number.
-btn_restock = Button(root, text="RESTOCK COMIC", fg="black", command=lambda: stock_book())
+btn_restock = Button(root, text="RESTOCK COMIC", fg="black", command=lambda: restock_book())
 btn_restock.grid(row=2, column=1, sticky=E + W)
 
 btn_edit = Button(root, text="EDIT THIS BOOK", fg="black", command=lambda: edit_book())
