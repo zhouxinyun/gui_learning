@@ -67,8 +67,8 @@ class Comic_book:
         :return: cancel this edit.
         """
         if int(new_sell) < 0:
-            messagebox.showerror("Error", "Stock and Sell must be a whole number which is >= 0.")
-            print("Stock and Sell must be a whole number which is >= 0.")
+            messagebox.showerror("Error", "Sell must be a whole number which is >= 0.")
+            print("Sell must be a whole number which is >= 0.")
             return
         self.__sell = int(new_sell)
 
@@ -77,9 +77,9 @@ class Comic_book:
         :param new_stock: a number which stock would change to.
         :return: cancel this edit.
         """
-        if int(new_stock) < 0:
-            messagebox.showerror("Error", "Stock and Sell must be a whole number which is >= 0.")
-            print("Stock and Sell must be a whole number which is >= 0.")
+        if int(new_stock) <= 0:
+            messagebox.showerror("Error", "Stock must be a whole number which is > 0.")
+            print("Stock must be a whole number which is > 0.")
             return
         self.__stock = int(new_stock)
 
@@ -416,20 +416,22 @@ def save(book, restock, window):
     :param window: Current window.
     :return: Add restock in to old stock.
     """
+    # check whether any blank box.
     if "" in [restock]:
         print("No field can be blank.")
         messagebox.showerror("Error", "No field can be blank.")
     # check whether new restock is a number.
-    try:
-        book.restock(int(restock))
-    except ValueError:
-        print("Restock must be a whole number.")
-        messagebox.showerror("Error", "Restock must be a number.")
-        return
-    except TypeError:
-        print("Error")
-        messagebox.showerror("Error", "Error")
-        return
+    else:
+        try:
+            book.restock(int(restock))
+        except ValueError:
+            print("Restock must be a whole number.")
+            messagebox.showerror("Error", "Restock must be a number.")
+            return
+        except TypeError:
+            print("Error")
+            messagebox.showerror("Error", "Error")
+            return
     # destroy stock_window.
     close_window(window)
 
@@ -491,7 +493,7 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
 
     # check price, sell and stock be a number, shows error message.
     try:
-        book = Comic_book(new_name, float(new_price), int(new_sell), int(new_stock))
+        book = Comic_book(str(new_name), float(new_price), int(new_sell), int(new_stock))
     except ValueError:
         error.set("Price, Stock and Sell must be a number.")
         print("Price, Stock and Sell must be a number.")
@@ -506,7 +508,7 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         error.set("Price must be a positive number.")
         print("Price must be a positive number.")
         return
-    elif int(new_sell) < 0 or int(new_stock) < 0:
+    elif int(new_sell) < 0 or int(new_stock) <= 0:
         error.set("Stock and Sell must be a whole number which is >= 0.")
         print("Stock and Sell must be a whole number which is >= 0.")
         return
