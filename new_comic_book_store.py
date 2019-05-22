@@ -416,6 +416,9 @@ def save(book, restock, window):
     :param window: Current window.
     :return: Add restock in to old stock.
     """
+    if "" in [restock]:
+        print("No field can be blank.")
+        messagebox.showerror("Error", "No field can be blank.")
     # check whether new restock is a number.
     try:
         book.restock(int(restock))
