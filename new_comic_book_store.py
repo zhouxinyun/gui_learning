@@ -59,6 +59,7 @@ class Comic_book:
         if float(new_price) <= 0:
             messagebox.showerror("Error", "Price must be a positive number.")
             return
+        # upload new price to books_list.
         self.__price = float(new_price)
 
     def set_sell(self, new_sell):
@@ -66,10 +67,12 @@ class Comic_book:
         :param new_sell: a number which sell would change to.
         :return: cancel this edit.
         """
+        # check new sell value is greater than 0.
         if int(new_sell) < 0:
             messagebox.showerror("Error", "Sell must be a whole number which is >= 0.")
             print("Sell must be a whole number which is >= 0.")
             return
+        # upload new sell number to books_list.
         self.__sell = int(new_sell)
 
     def set_stock(self, new_stock):
@@ -77,10 +80,17 @@ class Comic_book:
         :param new_stock: a number which stock would change to.
         :return: cancel this edit.
         """
+        # check new stock value is greater than 0.
         if int(new_stock) <= 0:
             messagebox.showerror("Error", "Stock must be a whole number which is > 0.")
             print("Stock must be a whole number which is > 0.")
             return
+        # check new stock value is less than 100.
+        if int(new_stock) >= 100:
+            messagebox.showerror("Error", "Stock must less than 100.")
+            print("Stock must less than 100.")
+            return
+        # upload new stock number to books_value
         self.__stock = int(new_stock)
 
     def sell_one(self):
@@ -115,17 +125,19 @@ class Comic_book:
             messagebox.showerror("Error", "Restock must be a positive number.")
             return
 
-        # if the restock is greater than or equal to 100, the program should have an message box to show Error.
-        if int(restock) >= 100:
-            print("Restock must less than 100.")
-            messagebox.showerror("Error", "Restock must less than 100.")
+        # if the total stock is greater than or equal to 100, the program should have an message box to show Error.
+        if self.__stock + int(restock) >= 100:
+            print("Stock must less than 100. There are {} comic(s) in stock.".format(int(restock)))
+            messagebox.showerror("Error", "Stock must less than 100. There are {} comic(s) in stock."
+                                 .format(int(restock)))
             return
 
         # if the number of restock which is type in is correct, calculate the total restock.
-        if 0 < int(restock) < 100:
+        else:
             self.__stock += int(restock)
             print("{} comic(s) have been added.".format(int(restock)))
-            messagebox.showinfo("Restock", "{} comic(s) have been added.".format(int(restock)))
+            messagebox.showinfo("Restock", "{} comic(s) have been added. There are {} comic in store."
+                                .format(int(restock), self.__stock))
 
 
 from tkinter import *
@@ -508,9 +520,13 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         error.set("Price must be a positive number.")
         print("Price must be a positive number.")
         return
-    elif int(new_sell) < 0 or int(new_stock) <= 0:
+    if int(new_sell) < 0 or int(new_stock) <= 0:
         error.set("Stock and Sell must be a whole number which is >= 0.")
         print("Stock and Sell must be a whole number which is >= 0.")
+        return
+    if int(new_stock) >= 100:
+        error.set("Stock must less than 100.")
+        print("Stock must less than 100.")
         return
 
     # add information into books_list.
