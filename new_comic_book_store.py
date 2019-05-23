@@ -176,7 +176,7 @@ def details():
     detail_window = Toplevel(root)
     detail_window.title("Detail")
     detail_window.option_add("*Font", "Times 20")
-    detail_window.geometry("300x200")
+    detail_window.geometry("250x200")
 
     # choose one comic in books_list and get its information.
     book_name = book_selector.get(ACTIVE)
@@ -252,7 +252,7 @@ def create_new_book():
     """
     # create a new window.
     new_book_window = Toplevel(root)
-    new_book_window.title("Enrol new Book")
+    new_book_window.title("Create new Book")
     new_book_window.option_add("*Font", "Times 20")
 
     # ask for new book's Title.
@@ -480,8 +480,9 @@ def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error
         error.set(err)
         print(err)
         return
-    if new_name == "" or new_name is None or type(new_name) is not str:
-        error.set("Name shouldn't be blank")
+
+    # show message that change current book's information.
+    messagebox.showinfo("Success", "Edit successfully.")
     # upload this book's information into books_list.
     update_book_selector()
     update_details()
@@ -533,6 +534,8 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         print("Stock must less than 100.")
         return
 
+    # show message that create new book.
+    messagebox.showinfo("Success", "Create successfully.")
     # add information into books_list.
     books_list.append(book)
     update_book_selector()
