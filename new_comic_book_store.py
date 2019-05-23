@@ -44,7 +44,9 @@ class Comic_book:
         :return: cancel this edit.
         """
         # check whether new book's name have any error.
+        new_name = new_name.strip()
         if new_name == "" or new_name is None or type(new_name) is not str:
+            messagebox.showerror("Error", "Name should be a string.")
             print("Name should be a string")
             return
         # upload new name to books_list.
@@ -58,6 +60,7 @@ class Comic_book:
         # check new price is a positive number.
         if float(new_price) <= 0:
             messagebox.showerror("Error", "Price must be a positive number.")
+            print("Price must be a positive number.")
             return
         # upload new price to books_list.
         self.__price = float(new_price)
@@ -481,8 +484,6 @@ def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error
         print(err)
         return
 
-    # show message that change current book's information.
-    messagebox.showinfo("Success", "Edit successfully.")
     # upload this book's information into books_list.
     update_book_selector()
     update_details()
@@ -518,6 +519,12 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         print(err)
         return
 
+    # check if name is space or not a str.
+    new_name = new_name.strip()
+    if new_name == "" or new_name is None or type(new_name) is not str:
+        error.set("Name should be str.")
+        print("Name should be str")
+        return
     # check if price, sell number and stock number be a positive number, shows error message.
     if float(new_price) <= 0:
         error.set("Price must be a positive number.")
@@ -536,6 +543,7 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
 
     # show message that create new book.
     messagebox.showinfo("Success", "Create successfully.")
+    print("Create successfully.")
     # add information into books_list.
     books_list.append(book)
     update_book_selector()
