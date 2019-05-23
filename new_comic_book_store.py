@@ -46,8 +46,8 @@ class comic_book:
         # check whether new book's name have any error.
         new_name = new_name.strip()
         if new_name == "" or new_name is None or type(new_name) is not str:
-            messagebox.showerror("Error", "Name should be a string.")
-            print("Name should be a string")
+            messagebox.showerror("Error", "Name should be a str.")
+            print("Name should be a str")
             return
         # upload new name to books_list.
         self.__name = new_name
@@ -180,6 +180,11 @@ class comic_book:
         :return: cancel this restock.
         """
         # calculate new restock number, show successful message.
+        if int(self.__stock) + 1 > 99:
+            print("Stock should not greater than 100.")
+            messagebox.showerror("Error", "Stock should not greater than 99.")
+            return
+
         self.__stock = int(self.__stock) + 1
         print("One comic have been added.")
         print("Stock: {}".format(self.__stock))
