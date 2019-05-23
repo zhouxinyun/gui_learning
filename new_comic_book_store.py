@@ -1,4 +1,4 @@
-class Comic_book:
+class comic_book:
     """ A class link to the Tkinter.
     """
 
@@ -112,9 +112,42 @@ class Comic_book:
 
         # if there are no stock, the comic could not sold.
         if self.__stock <= 0:
+            messagebox.showerror("Sell", "Sorry, there are 0 stock for this book. So you can't sold it.")
+            print("There are no stock for this book.")
+            return
+
+    def sell(self, sell):
+        """Calculate the sell when we sold comics.
+        Shown Error message when program is not working.
+        :param sell: sell should be type in.
+        :return: cancel this sell and stock number doesn't change.
+        """
+        # if there are no stock, the comic could not sold.
+        if self.__stock <= 0:
             messagebox.showerror("Sell", "Sorry, there are 0 stock for this book")
             print("There are no stock for this book.")
             return
+
+        # if the restock is less than or equal to 0, the program should have an message box to show Error.
+        if int(sell) <= 0:
+            print("Sell must be a positive whole number.")
+            messagebox.showerror("Error", "Sell must be a positive number.")
+            return
+
+        # if sell value is greater than stock, it can't been sold.
+        if self.__stock - int(sell) < 0:
+            print("There are {} comic in store. So you can't sold {} comic(s).".format(int(self.__stock), int(sell)))
+            messagebox.showerror("Error", "There are {} comic in store. So you can't sold {} comic(s)."
+                                 .format(int(self.__stock), int(sell)))
+            return
+
+        # if the value of sell which is type in is correct, calculate the total stock and sold number.
+        else:
+            self.__sell += int(sell)
+            self.__stock -= int(sell)
+            print("{} comic(s) have been sell.".format(int(sell)))
+            messagebox.showinfo("Restock", "{} comic(s) have been sold. There are {} comic in store."
+                                .format(int(sell), self.__stock))
 
     def restock(self, restock):
         """Calculate the restock when we add new restock in.
@@ -142,6 +175,16 @@ class Comic_book:
             messagebox.showinfo("Restock", "{} comic(s) have been added. There are {} comic in store."
                                 .format(int(restock), self.__stock))
 
+    def restock_one_comic(self):
+        """ Calculate the comic number when one comic added into stock.
+        :return: cancel this restock.
+        """
+        # calculate new restock number, show successful message.
+        self.__stock = int(self.__stock) + 1
+        print("One comic have been added.")
+        print("Stock: {}".format(self.__stock))
+        messagebox.showinfo("Stock", "One comic have been added")
+
 
 from tkinter import *
 from tkinter import messagebox
@@ -149,9 +192,9 @@ from tkinter import messagebox
 # this list carry all information about these comics.
 books_list = []
 # create the book objects for when the program is  first run.
-books_list.append(Comic_book("Super Dude", 3, 0, 8))
-books_list.append(Comic_book("Lizard Man", 4, 0, 12))
-books_list.append(Comic_book("Water Woman", 2.5, 0, 3))
+books_list.append(comic_book("Super Dude", 3, 0, 8))
+books_list.append(comic_book("Lizard Man", 4, 0, 12))
+books_list.append(comic_book("Water Woman", 2.5, 0, 3))
 
 
 def get_book(name):
@@ -168,7 +211,7 @@ def get_book(name):
 # creates and sets up a window.
 root = Tk()
 root.title("Comic Book Store System")
-root.geometry("575x390")
+root.geometry("575x480")
 root.option_add("*Font", "Times 20")
 
 
@@ -207,14 +250,55 @@ def details():
     btn_close.grid(row=4, column=0, sticky=E + W)
 
 
-def sell_book():
+def sell_one_book():
     """Sell one comic, mines 1 from stock and plus one on sell.
     """
     # get the stock and sell number from books_list.
     book_name = book_selector.get(ACTIVE)
     current_book = get_book(book_name)
-
     current_book.sell_one()
+
+
+def restock_one_book():
+    """Restock one comic, add 1 to stock.
+    """
+    # get the stock number from books_list.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+    current_book.restock_one_comic()
+
+
+def sell_book():
+    """Add comics number which have been sold, calculate stock and sold after it.
+    """
+    # create a new window
+    sell_window = Toplevel(root)
+    sell_window.title("Sell Comic")
+    sell_window.option_add("*Font", "Times 20")
+    sell_window.geometry("425x125")
+
+    # get a book's information which chosen in list box.
+    book_name = book_selector.get(ACTIVE)
+    current_book = get_book(book_name)
+
+    # ask how many books want to sell.
+    lbl_sell_book_text = Label(sell_window, text="How many books do you want to sell?")
+    lbl_sell_book_text.grid(row=0, columnspan=2)
+
+    str_current_sell = StringVar()
+
+    # create an input box that only can type the number in it.
+    ent_sell_number = Entry(sell_window, textvariable=str_current_sell)
+    ent_sell_number.grid(row=1, columnspan=2, sticky=E + W)
+
+    # create a button can add sold comic book's number and minus stock book's number.
+    btn_save = Button(sell_window, text="Sell",
+                      command=lambda: save_sell(current_book, str_current_sell.get(), sell_window))
+    btn_save.grid(row=3, column=0, sticky=W)
+
+    # create a button can cancel this operating.
+    btn_cancel = Button(sell_window, text="Cancel", command=lambda: close_window(sell_window))
+    btn_cancel.grid(row=3, column=1, sticky=E)
 
 
 def restock_book():
@@ -222,7 +306,7 @@ def restock_book():
     """
     # create a new window
     stock_window = Toplevel(root)
-    stock_window.title("Sell One Comic")
+    stock_window.title("Restore Comic")
     stock_window.option_add("*Font", "Times 20")
     stock_window.geometry("480x125")
 
@@ -421,7 +505,35 @@ def close_window(window):
     """A program that can close current window.
     :param window: Current window.
     """
+    # destroy current window.
     window.destroy()
+
+
+def save_sell(book, sell, window):
+    """Check whether new restock value is a number, and add it into old stock number. Shows error information.
+    :param book: Current book which chosen in books_list.
+    :param sell: The value which type into the input box.
+    :param window: Current window.
+    :return: this restock unsuccessful.
+    """
+    # check whether any blank box.
+    if "" in [sell]:
+        print("No field can be blank.")
+        messagebox.showerror("Error", "No field can be blank.")
+        return
+    # check whether new restock is a number.
+    try:
+        book.sell(int(sell))
+    except ValueError:
+        print("Sell must be a whole number.")
+        messagebox.showerror("Error", "Sell must be a number.")
+        return
+    except TypeError:
+        print("Error")
+        messagebox.showerror("Error", "Error")
+        return
+    # destroy stock_window.
+    close_window(window)
 
 
 def save(book, restock, window):
@@ -509,7 +621,7 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
 
     # check price, sell and stock be a number, shows error message.
     try:
-        book = Comic_book(str(new_name), float(new_price), int(new_sell), int(new_stock))
+        book = comic_book(str(new_name), float(new_price), int(new_sell), int(new_stock))
     except ValueError:
         error.set("Price, Stock and Sell must be a number.")
         print("Price, Stock and Sell must be a number.")
@@ -587,10 +699,10 @@ def update_details():
 
 
 # make a list box that can choose different books.
-book_selector = Listbox(root, height=12)
+book_selector = Listbox(root, height=15)
 # get the information of this book which selected.
 update_book_selector()
-book_selector.grid(row=0, column=0, rowspan=7)
+book_selector.grid(row=0, column=0, rowspan=9)
 
 # insert a book in the book list.
 for book in books_list:
@@ -601,28 +713,37 @@ book_selector.grid()
 btn_detail = Button(root, text="DETAIL", fg="black", command=lambda: details())
 btn_detail.grid(row=0, column=1, sticky=E + W)
 
-# create button can shows sell books window, it also can mines stock, add sell number.
-btn_sell = Button(root, text="SELL ONE COMIC", fg="black", command=lambda: sell_book())
-btn_sell.grid(row=1, column=1, sticky=E + W)
+# create button can sell one comic, it also can minus stock, add sold number.
+btn_sell_one = Button(root, text="SELL ONE COMIC", fg="black", command=lambda: sell_one_book())
+btn_sell_one.grid(row=1, column=1, sticky=E + W)
+
+# create button can sell comic(s) more than 1 copies. It could minus stock and add sold number.
+btn_sell = Button(root, text="SELL COMIC", fg="black", command=lambda: sell_book())
+btn_sell.grid(row=2, column=1, sticky=E + W)
+
+# create button can add one comic into stock.
+btn_restock_one = Button(root, text="RESTOCK ONE COMIC", fg="black", command=lambda: restock_one_book())
+btn_restock_one.grid(row=3, column=1, sticky=E + W)
 
 # create button can shows restock books window, it also can calculate total stock  number.
 btn_restock = Button(root, text="RESTOCK COMIC", fg="black", command=lambda: restock_book())
-btn_restock.grid(row=2, column=1, sticky=E + W)
+btn_restock.grid(row=4, column=1, sticky=E + W)
 
+# create button which shows a window can change current book's information.
 btn_edit = Button(root, text="EDIT THIS BOOK", fg="black", command=lambda: edit_book())
-btn_edit.grid(row=3, column=1, sticky=E + W)
+btn_edit.grid(row=5, column=1, sticky=E + W)
 
 # create button can added new book in the books_list, which is include new book's information.
 btn_new_book = Button(root, text="CREATE NEW BOOK", fg="black",
-                      command=lambda: create_new_book()).grid(row=4, column=1, sticky=N + E + S + W)
+                      command=lambda: create_new_book()).grid(row=6, column=1, sticky=N + E + S + W)
 
 # create button can delete current book in the books_list, include this book's information.
 btn_delete = Button(root, text="DELETE THIS BOOK", fg="black",
                     command=lambda: delete_book(get_book(book_selector.get(ACTIVE))))
-btn_delete.grid(row=5, column=1, sticky=E + W)
+btn_delete.grid(row=7, column=1, sticky=E + W)
 
 # create button can close comic_book_store system.
 btn_exit = Button(root, text="EXIT", fg="black", command=lambda: close_window(root))
-btn_exit.grid(row=6, column=1, sticky=E + W)
+btn_exit.grid(row=8, column=1, sticky=E + W)
 
 root.mainloop()
