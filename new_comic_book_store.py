@@ -85,10 +85,10 @@ class Comic_book:
             messagebox.showerror("Error", "Stock must be a whole number which is > 0.")
             print("Stock must be a whole number which is > 0.")
             return
-        # check new stock value is less than 100.
-        if int(new_stock) >= 100:
-            messagebox.showerror("Error", "Stock must less than 100.")
-            print("Stock must less than 100.")
+        # check new stock value is no greater 100.
+        if int(new_stock) > 100:
+            messagebox.showerror("Error", "Stock must less than or equal to 100.")
+            print("Stock must less than or equal to 100.")
             return
         # upload new stock number to books_value
         self.__stock = int(new_stock)
@@ -125,10 +125,10 @@ class Comic_book:
             messagebox.showerror("Error", "Restock must be a positive number.")
             return
 
-        # if the total stock is greater than or equal to 100, the program should have an message box to show Error.
-        if self.__stock + int(restock) >= 100:
-            print("Stock must less than 100. There are {} comic(s) in stock.".format(int(restock)))
-            messagebox.showerror("Error", "Stock must less than 100. There are {} comic(s) in stock."
+        # if the total stock is no greater 100, the program should have an message box to show Error.
+        if self.__stock + int(restock) > 100:
+            print("Stock must less than or equal to 100. There are {} comic(s) in stock.".format(int(restock)))
+            messagebox.showerror("Error", "Stock must less than or equal to 100. There are {} comic(s) in stock."
                                  .format(int(restock)))
             return
 
@@ -165,8 +165,8 @@ def get_book(name):
 # creates and sets up a window.
 root = Tk()
 root.title("Comic Book Store System")
-root.geometry("600x400")
-root.option_add("*Font", "LucidaGrande 20")
+root.geometry("575x390")
+root.option_add("*Font", "Times 20")
 
 
 def details():
@@ -175,7 +175,7 @@ def details():
     # create a new window to show the comic's information.
     detail_window = Toplevel(root)
     detail_window.title("Detail")
-    detail_window.option_add("*Font", "LucidaGrande 20")
+    detail_window.option_add("*Font", "Times 20")
     detail_window.geometry("300x200")
 
     # choose one comic in books_list and get its information.
@@ -220,8 +220,8 @@ def restock_book():
     # create a new window
     stock_window = Toplevel(root)
     stock_window.title("Sell One Comic")
-    stock_window.option_add("*Font", "LucidaGrande 20")
-    stock_window.geometry("510x150")
+    stock_window.option_add("*Font", "Times 20")
+    stock_window.geometry("480x125")
 
     # get a book's information which chosen in list box.
     book_name = book_selector.get(ACTIVE)
@@ -253,7 +253,7 @@ def create_new_book():
     # create a new window.
     new_book_window = Toplevel(root)
     new_book_window.title("Enrol new Book")
-    new_book_window.option_add("*Font", "LucidaGrande 20")
+    new_book_window.option_add("*Font", "Times 20")
 
     # ask for new book's Title.
     title = Label(new_book_window, text="Nane:")
@@ -319,7 +319,7 @@ def delete_book(book):
     # create a new window.
     delete_book_window = Toplevel(root)
     delete_book_window.title("Delete this book?")
-    delete_book_window.option_add("*Font", "LucidaGrande 20")
+    delete_book_window.option_add("*Font", "Times 20")
 
     # rechecked delete this book.
     lbl_check = Label(delete_book_window, text="Are you sure you want to delete {}?".format(book.get_name()))
@@ -330,7 +330,7 @@ def delete_book(book):
     btn_cancel.grid(row=1, column=1, sticky=W)
 
     # delete this book and destroy this window.
-    btn_delete_check = Button(delete_book_window, text="Delete Book",
+    btn_delete_check = Button(delete_book_window, text="Delete",
                               command=lambda: delete_and_close(book, delete_book_window))
     btn_delete_check.grid(row=1, column=0, sticky=E)
 
@@ -341,7 +341,7 @@ def edit_book():
     # create new window.
     edit_window = Toplevel(root)
     edit_window.title("Edit comic's details")
-    edit_window.option_add("*Font", "LucidaGrande 20")
+    edit_window.option_add("*Font", "Times 20")
 
     # Ask the name of this book.
     lbl_title = Label(edit_window, text="Name:")
@@ -465,9 +465,10 @@ def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error
         print("No field can be blank.")
         return
     # upload new_name to self.__name.
-    book.set_name(new_name)
+
     # check ValueError and TypeError of new_price, new_sell, and new_stock.
     try:
+        book.set_name(new_name)
         book.set_price(new_price)
         book.set_sell(new_sell)
         book.set_stock(new_stock)
@@ -479,7 +480,8 @@ def save_and_close(book, new_name, new_price, new_sell, new_stock, window, error
         error.set(err)
         print(err)
         return
-
+    if new_name == "" or new_name is None or type(new_name) is not str:
+        error.set("Name shouldn't be blank")
     # upload this book's information into books_list.
     update_book_selector()
     update_details()
@@ -525,9 +527,9 @@ def create_and_close(new_name, new_price, new_sell, new_stock, window, error):
         error.set("Stock and Sell must be a whole number which is >= 0.")
         print("Stock and Sell must be a whole number which is >= 0.")
         return
-    # check whether stock is less than 100.
-    if int(new_stock) >= 100:
-        error.set("Stock must less than 100.")
+    # check whether stock is greater than 100.
+    if int(new_stock) > 100:
+        error.set("Stock must less than or equal to 100.")
         print("Stock must less than 100.")
         return
 
@@ -579,6 +581,7 @@ book_selector = Listbox(root, height=12)
 update_book_selector()
 book_selector.grid(row=0, column=0, rowspan=7)
 
+# insert a book in the book list.
 for book in books_list:
     book_selector.insert(END)
 book_selector.grid()
